@@ -2,7 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <ArduinoOTA.h>
 #include <PubSubClient.h>
-
+#include <string.h>
 //capteurs
 int moistureSensorPin = A0; // pour le capteur de l'humidité du sol
 int moistureVal; //analog readings
@@ -13,7 +13,7 @@ const char * wifi_password = "14121875";
 const char* mqttServer = "maqiatto.com";
 const int mqttPort = 1883;
 const char* mqttUser = "mariecgs@protonmail.com";
-const char* mqttPassword = "43CTu*g&9U!pq";
+const char* mqttPassword = "k945PYT&V#U@t";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -89,11 +89,20 @@ void setup() {
 
 
 void loop() {
+  
     moistureVal = analogRead(moistureSensorPin);//lire la valeur retournée par le capteur de l'humidité
     Serial.println("capteur : ");
     Serial.println(moistureVal);
-  
+   // Serial.println(snprintf(msg,10,moistureVal));
+
+    int valueToSend = 5;
+    char valueAsString[32] = {0};
+    snprintf(valueAsString, sizeof(valueAsString), "%d", moistureVal);
+    Serial.println(moistureVal);
+
     ArduinoOTA.handle();
     client.publish("mariecgs@protonmail.com/gislain", "moistureVal"); 
+    client.publish("mariecgs@protonmail.com/gislain", valueAsString); 
+
     delay(8000);
 }
