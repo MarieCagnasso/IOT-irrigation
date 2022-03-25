@@ -90,19 +90,31 @@ void setup() {
 
 void loop() {
   
-    moistureVal = analogRead(moistureSensorPin);//lire la valeur retournée par le capteur de l'humidité
-    Serial.println("capteur : ");
-    Serial.println(moistureVal);
-   // Serial.println(snprintf(msg,10,moistureVal));
+    if(!client.connected()){
+      Serial.println("déconnecté");
+      if (client.connect("ESP8266Client", mqttUser, mqttPassword )) {
 
-    int valueToSend = 5;
+        Serial.println("connected");  
+
+      } else {
+          Serial.print("failed with state ");
+      }
+
+    }else{
+      Serial.println("connecté");
+    }
+    moistureVal = analogRead(moistureSensorPin);//lire la valeur retournée par le capteur de l'humidité
+
     char valueAsString[32] = {0};
     snprintf(valueAsString, sizeof(valueAsString), "%d", moistureVal);
-    Serial.println(moistureVal);
+
+    Serial.println("capteur : ");
+    Serial.println(valueAsString);
 
     ArduinoOTA.handle();
-    client.publish("mariecgs@protonmail.com/gislain", "moistureVal"); 
     client.publish("mariecgs@protonmail.com/gislain", valueAsString); 
-
+    
+    
+    
     delay(8000);
 }
