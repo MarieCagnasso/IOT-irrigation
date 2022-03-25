@@ -3,13 +3,17 @@
 #include <ArduinoOTA.h>
 #include <PubSubClient.h>
 
+//capteurs
+int moistureSensorPin = A0; // pour le capteur de l'humidité du sol
+int moistureVal; //analog readings
+
 // Wi-Fi connection parameters
 const char * wifi_ssid = "Redmi Note 9 Pro";
 const char * wifi_password = "14121875";
 const char* mqttServer = "maqiatto.com";
 const int mqttPort = 1883;
-const char* mqttUser = "adrien.peyrouty@e-rekcah.com";
-const char* mqttPassword = "ISIS_IoT_2020";
+const char* mqttUser = "mariecgs@protonmail.com";
+const char* mqttPassword = "43CTu*g&9U!pq";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -57,37 +61,39 @@ void setUpOverTheAirProgramming() {
 
 
 void setup() {
-  Serial.begin(115200);
-  connectToWiFi();
-  setUpOverTheAirProgramming();
+    Serial.begin(115200);
+    connectToWiFi();
+    setUpOverTheAirProgramming();
 
-  client.setServer(mqttServer, mqttPort);
-  client.setCallback(callback);
- 
-  while (!client.connected()) {
+    client.setServer(mqttServer, mqttPort);
+    client.setCallback(callback);
+
+    while (!client.connected()) {
     Serial.println("Connecting to MQTT...");
- 
+
     if (client.connect("ESP8266Client", mqttUser, mqttPassword )) {
- 
-      Serial.println("connected");  
- 
+
+        Serial.println("connected");  
+
     } else {
- 
-      Serial.print("failed with state ");
-      Serial.print(client.state());
-      delay(2000);
- 
+
+        Serial.print("failed with state ");
+        Serial.print(client.state());
+        delay(2000);
+
     }
   }
- 
-  client.publish("adrien.peyrouty@e-rekcah.com/test1", "hello bonjouuuuuuur"); //Topic name
-  client.subscribe("esp/test");
+
+  client.publish("mariecgs@protonmail.com/gislain", "hello gislain"); //Topic name
 }
 
 
 void loop() {
-  // Give processing time for ArduinoOTA
-  ArduinoOTA.handle();
-  client.publish("adrien.peyrouty@e-rekcah.com/test1", "HORUS RECRUTE REJOIGNIEZ NOUS : ON SAMUSE BIEN"); 
-  delay(8000);
+    moistureVal = analogRead(moistureSensorPin);//lire la valeur retournée par le capteur de l'humidité
+    Serial.println("capteur : ");
+    Serial.println(moistureVal);
+  
+    ArduinoOTA.handle();
+    client.publish("mariecgs@protonmail.com/gislain", "moistureVal"); 
+    delay(8000);
 }
